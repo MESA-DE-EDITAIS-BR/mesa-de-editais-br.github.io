@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#EE6A12">
+<meta property="og:title" content="Mesa de Editais">
+<meta property="og:description" content="Cadastre seus projetos culturais, acompanhe os editais abertos e prepare inscrições no formato que a comissão pontua.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23EE6A12'/%3E%3Ctext x='32' y='43' font-family='Arial' font-weight='900' font-size='28' text-anchor='middle' fill='white'%3EME%3C/text%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Mesa de Editais</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Mesa de Editais: cadastre seus projetos culturais, acompanhe os editais abertos e prepare inscrições no formato que a comissão pontua.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..900&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: cartaz de produção cultural — faixas laranja e brancas alternadas, ficha de inscrição como peça central, carimbos de status */
+:root{
+  color-scheme: light;
+  --laranja:#EE6A12; --laranja-forte:#C75308; --laranja-claro:#FFF1E6; --laranja-borda:#FBD3B3;
+  --branco:#FFFFFF; --tinta:#2A1A0E; --tinta-suave:#6B5444; --linha:#F0E2D6;
+  --azul:#1D5FD6; --azul-forte:#164BAA; --azul-claro:#E8F0FD;
+  --verde:#178A4C; --verde-claro:#E6F5EC;
+  --analise:#D96A00; --analise-claro:#FFF0DC;
+  --vermelho:#D02F2F; --vermelho-claro:#FDECEC;
+  --cinza:#8A7B70;
+  --fundo:#FFF3E4; --pessego:#FFE1C4; --manga:#FFEDAA; --ceu:#D6E6FF; --coral:#FFD5CC; --menta:#CFF0DC;
+  --silhueta:#2E1A0C; --amarelo:#FFB703; --rosa:#E8457E; --roxo:#7A4DF0; --mostarda:#D99A00; --ouro:#FFC93C;
+  --f-display:"Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--fundo);color:var(--tinta);font-family:var(--f-body);font-size:16px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--branco)}
+.in{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--azul)}
+:focus-visible{outline:3px solid var(--azul);outline-offset:2px;border-radius:4px}
+
+/* Topo */
+.topo{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--branco);border-bottom:1px solid var(--linha)}
+.topo .in{display:flex;align-items:center;gap:16px;padding-block:12px}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--tinta)}
+.selo{width:38px;height:38px;border-radius:9px;background:var(--laranja);display:grid;place-items:center;color:var(--branco);font:900 15px/1 var(--f-display);font-stretch:85%;letter-spacing:.02em;transform:rotate(-4deg)}
+.marca b{font:800 19px/1 var(--f-display);font-stretch:88%;letter-spacing:-.01em}
+.topo nav{display:flex;gap:18px;margin-left:auto;font-size:14px;font-weight:600}
+.topo nav a{color:var(--tinta-suave);text-decoration:none}
+.topo nav a:hover{color:var(--laranja-forte)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 15px var(--f-body);border-radius:10px;padding:12px 18px;cursor:pointer;border:2px solid var(--azul);background:var(--azul);color:var(--branco);text-decoration:none;transition:background .15s,transform .15s}
+.btn:hover{background:var(--azul-forte);border-color:var(--azul-forte)}
+.btn:active{transform:translateY(1px)}
+.btn.contorno{background:var(--branco);color:var(--azul)}
+.btn.contorno:hover{background:var(--azul-claro)}
+.btn.verde{background:var(--verde);border-color:var(--verde)}
+.btn.pq{padding:8px 14px;font-size:14px}
+.btn:disabled{opacity:.55;cursor:default}
+@media (max-width:760px){.topo nav{display:none}.topo .btn.contorno{display:none}.topo .btns{margin-left:auto}}
+
+/* Hero */
+.hero{color:var(--branco);overflow:hidden;background:
+  radial-gradient(circle at 6% 18%, rgba(255,183,3,.55) 0 70px, transparent 71px),
+  radial-gradient(circle at 92% 88%, rgba(232,69,126,.45) 0 120px, transparent 121px),
+  radial-gradient(circle at 48% 104%, rgba(255,201,60,.5) 0 90px, transparent 91px),
+  radial-gradient(circle at 70% 8%, rgba(122,77,240,.30) 0 46px, transparent 47px),
+  radial-gradient(circle, rgba(255,255,255,.22) 2px, transparent 2.5px) 0 0/26px 26px,
+  var(--laranja)}
+.hero .in{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding-block:56px 64px}
+.hero .in > *{min-width:0}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;opacity:.9}
+.hero h1{font:900 clamp(38px,6.4vw,72px)/.95 var(--f-display);font-stretch:82%;letter-spacing:-.015em;margin:12px 0 18px;text-wrap:balance}
+.hero h1 span{display:inline-block;background:var(--branco);color:var(--laranja-forte);padding:0 .14em;border-radius:6px;transform:rotate(-1.5deg)}
+.hero p.sub{font-size:18px;max-width:46ch;margin:0 0 26px;opacity:.96}
+.hero .acoes{display:flex;flex-wrap:wrap;gap:10px}
+.hero .btn.contorno{border-color:var(--branco)}
+.hero ul.garantias{list-style:none;padding:0;margin:22px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;font-weight:600}
+.hero ul.garantias li::before{content:"✓ ";font-weight:800}
+@media (max-width:860px){.hero .in{grid-template-columns:1fr;padding-block:36px 44px}}
+
+/* Ficha de inscrição (peça central) */
+.ficha{background:var(--branco);color:var(--tinta);border-radius:14px;box-shadow:0 18px 40px rgba(90,35,0,.28);padding:20px 20px 16px;transform:rotate(1.2deg);position:relative}
+.ficha::before{content:"";position:absolute;left:24px;right:24px;top:-8px;height:16px;background:repeating-linear-gradient(90deg,var(--laranja-borda) 0 10px,transparent 10px 18px);border-radius:4px}
+.ficha .cab{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:2px dashed var(--linha);padding-bottom:10px;margin-bottom:6px}
+.ficha .cab strong{font:800 17px var(--f-display);font-stretch:90%}
+.ficha .cab small{font:500 11px var(--f-mono);color:var(--tinta-suave)}
+.linha-f{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:10px 0;border-bottom:1px solid var(--linha);align-items:center}
+.linha-f:last-of-type{border-bottom:none}
+.linha-f b{font-size:14px}
+.linha-f small{grid-column:1/-1;color:var(--tinta-suave);font-size:13px;line-height:1.4}
+.nota{display:flex;justify-content:space-between;align-items:center;margin-top:10px;background:var(--laranja-claro);border-radius:10px;padding:10px 12px;font-size:14px}
+.nota b{font:800 22px var(--f-display);font-variant-numeric:tabular-nums}
+
+/* Carimbos de status — sistema de cores da Mesa */
+.carimbo{font:500 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border:1.5px solid currentColor;border-radius:4px;white-space:nowrap;transform:rotate(-2deg);display:inline-block;background:var(--branco)}
+.c-ok{color:var(--verde)} .c-analise{color:var(--analise)} .c-erro{color:var(--vermelho)} .c-off{color:var(--cinza)}
+
+/* Faixa de leis */
+.faixa{border-bottom:1px solid var(--linha);background:var(--laranja-claro)}
+.faixa .in{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;padding-block:16px;font:700 14px var(--f-display);font-stretch:90%;color:var(--laranja-forte);letter-spacing:.02em;text-transform:uppercase}
+.faixa span:first-child{font:500 12px var(--f-mono);color:var(--tinta-suave);text-transform:none;letter-spacing:0}
+
+/* Seções */
+section.bloco{padding-block:64px 72px}
+#como,#planos{background:var(--pessego)}
+#criterios,#cadastro{background:var(--manga)}
+#radar,#entrar{background:var(--ceu)}
+#erros,#faq{background:var(--coral)}
+#quem{background:var(--menta)}
+
+/* Separação de tela: atabaque, sax e pintura */
+.divisor{position:relative;overflow:hidden;background:radial-gradient(circle at 12% 30%,rgba(255,183,3,.35) 0 34px,transparent 35px),radial-gradient(circle at 88% 40%,rgba(232,69,126,.25) 0 44px,transparent 45px),linear-gradient(90deg,#FFE3C4 0%,#FFF1BF 35%,#FFDCE6 70%,#E6DEFF 100%);box-shadow:inset 0 -6px 0 var(--laranja)}
+.divisor .in{position:relative;display:flex;justify-content:center;gap:clamp(18px,9vw,130px);align-items:flex-end;height:176px;padding-top:12px}
+.divisor svg{height:156px;width:auto;color:var(--silhueta);flex:none;overflow:visible;transform-origin:50% 100%;animation:balanco 1.6s ease-in-out infinite}
+.divisor svg:nth-child(2){animation-delay:-.55s} .divisor svg:nth-child(3){animation-delay:-1.1s}
+@keyframes balanco{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-2.5deg)}}
+.divisor .enfeite{position:absolute;font:800 22px/1 var(--f-display);opacity:.85;animation:flutua 3.2s ease-in-out infinite;pointer-events:none}
+.divisor .pingo{position:absolute;width:12px;height:12px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);opacity:.9}
+@keyframes flutua{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media (max-width:520px){.divisor .in{height:132px;gap:6px}.divisor svg{height:116px}}
+.tit{max-width:680px;margin-bottom:34px}
+.tit .eyebrow{color:var(--laranja-forte);opacity:1}
+h2{font:900 clamp(30px,4.4vw,46px)/1.02 var(--f-display);font-stretch:84%;letter-spacing:-.01em;margin:8px 0 12px;text-wrap:balance}
+.tit p{color:var(--tinta-suave);margin:0;font-size:17px}
+
+.passos{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:p}
+.passo{--cor:var(--laranja);background:var(--branco);border-radius:14px;border-top:6px solid var(--cor);padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 8px 20px rgba(90,35,0,.07)}
+.passo:nth-child(2){--cor:var(--rosa)} .passo:nth-child(3){--cor:var(--roxo)} .passo:nth-child(4){--cor:var(--mostarda)}
+.passo::before{counter-increment:p;content:counter(p,decimal-leading-zero);font:900 40px/1 var(--f-display);font-stretch:80%;color:var(--cor)}
+.tit h2{position:relative;display:inline-block}
+.tit h2::after{content:"";display:block;height:6px;width:96px;margin-top:10px;border-radius:6px;background:linear-gradient(90deg,var(--laranja),var(--amarelo),var(--rosa),var(--roxo))}
+.passo h3{margin:0;font:800 19px/1.2 var(--f-display);font-stretch:92%}
+.passo p{margin:0;color:var(--tinta-suave);font-size:15px}
+@media (max-width:860px){.passos{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.passos{grid-template-columns:1fr}}
+
+/* Matriz */
+.matriz-wrap{display:grid;grid-template-columns:1.3fr .7fr;gap:28px;align-items:start}
+.matriz-wrap > *{min-width:0}
+.tabela{overflow-x:auto;background:var(--branco);border:1px solid var(--linha);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:460px;font-size:15px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--linha);vertical-align:top}
+th{font:700 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--tinta-suave);background:var(--laranja-claro)}
+td.l{font:900 20px var(--f-display);color:var(--laranja);width:44px}
+td.n{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.escala{display:flex;flex-direction:column;gap:10px}
+.escala .item{background:var(--branco);border:1px solid var(--linha);border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:center}
+.escala .item b{font:900 30px/1 var(--f-display);font-variant-numeric:tabular-nums;width:48px;flex:none}
+.escala .item span{font-size:14px;color:var(--tinta-suave)}
+@media (max-width:860px){.matriz-wrap{grid-template-columns:1fr}}
+
+/* Radar */
+.filtros{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{font:600 14px var(--f-body);border:1.5px solid var(--linha);background:var(--branco);color:var(--tinta);padding:7px 14px;border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--azul);color:var(--azul)}
+.chip[aria-pressed="true"]{background:var(--azul);border-color:var(--azul);color:var(--branco)}
+.radar{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.radar > *{min-width:0}
+.ed{background:var(--branco);border:1px solid var(--linha);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.ed .topo-ed{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.ed h3{margin:0;font-size:16px;line-height:1.35}
+.ed .org{font-size:13px;color:var(--tinta-suave)}
+.ed .meta{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--tinta-suave)}
+.ed .meta b{color:var(--tinta);font-weight:600;font-variant-numeric:tabular-nums}
+.ed a{font-size:14px;font-weight:600;margin-top:auto}
+@media (max-width:760px){.radar{grid-template-columns:1fr}}
+
+/* Erros x Mesa */
+.compara{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.compara > *{min-width:0}
+.lado{border-radius:14px;padding:22px;border:1px solid var(--linha);background:var(--branco)}
+.lado h3{margin:0 0 12px;font:800 20px var(--f-display);font-stretch:90%}
+.lado ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;font-size:15px}
+.lado li{display:grid;grid-template-columns:22px 1fr;gap:8px}
+.lado.erro h3{color:var(--vermelho)} .lado.erro li::before{content:"✕";color:var(--vermelho);font-weight:800}
+.lado.certo{border-color:var(--verde);background:var(--verde-claro)} .lado.certo h3{color:var(--verde)} .lado.certo li::before{content:"✓";color:var(--verde);font-weight:800}
+@media (max-width:760px){.compara{grid-template-columns:1fr}}
+
+/* Quem */
+.quem{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start}
+.quem .ini{width:120px;height:120px;border-radius:18px;background:var(--laranja);color:var(--branco);display:grid;place-items:center;font:900 46px var(--f-display);font-stretch:80%;transform:rotate(-3deg)}
+.quem p{max-width:62ch;margin:0 0 12px}
+.quem .assin{font-weight:700}
+@media (max-width:560px){.quem{grid-template-columns:1fr}}
+
+/* Planos */
+.espera{border:2px dashed var(--laranja-borda);border-radius:16px;padding:28px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;background:var(--branco)}
+.espera p{margin:0;max-width:56ch}
+.planos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.plano{border:1px solid var(--linha);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;background:var(--branco)}
+.plano .preco{font:900 34px var(--f-display);font-variant-numeric:tabular-nums}
+.plano ul{margin:0;padding-left:18px;font-size:14px;color:var(--tinta-suave)}
+@media (max-width:760px){.planos{grid-template-columns:1fr}}
+
+/* Cadastro */
+.cad{display:grid;grid-template-columns:.85fr 1.15fr;gap:32px;align-items:start}
+.cad > *{min-width:0}
+.cad .lista-v{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-direction:column;gap:10px}
+.cad .lista-v li::before{content:"✓ ";color:var(--verde);font-weight:800}
+form{background:var(--branco);border:1px solid var(--linha);border-radius:16px;padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:14px;box-shadow:0 10px 30px rgba(90,35,0,.06)}
+form > *{min-width:0}
+.full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--tinta)}
+label .opc{font-weight:500;color:var(--tinta-suave)}
+input,select,textarea{font:16px var(--f-body);color:var(--tinta);background:var(--branco);border:1.5px solid var(--linha);border-radius:10px;padding:11px 12px;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--azul);outline:none;box-shadow:0 0 0 3px var(--azul-claro)}
+input[aria-invalid="true"],select[aria-invalid="true"]{border-color:var(--vermelho);background:var(--vermelho-claro)}
+textarea{min-height:84px;resize:vertical}
+fieldset{border:1.5px solid var(--linha);border-radius:10px;padding:10px 12px;margin:0}
+legend{font-size:13px;font-weight:700;padding:0 4px}
+.checks{display:flex;flex-wrap:wrap;gap:6px 14px}
+.checks label,.consent{flex-direction:row;align-items:center;gap:6px;font-weight:500;font-size:14px}
+.checks input,.consent input{width:auto;accent-color:var(--azul)}
+.consent{align-items:flex-start}
+.consent input{margin-top:4px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.aviso{border-radius:10px;padding:12px 14px;font-size:14px;font-weight:600}
+.aviso.ok{background:var(--verde-claro);color:var(--verde)}
+.aviso.analise{background:var(--analise-claro);color:var(--analise)}
+.aviso.erro{background:var(--vermelho-claro);color:var(--vermelho)}
+.aviso .acoes{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+@media (max-width:860px){.cad{grid-template-columns:1fr}}
+@media (max-width:520px){form{grid-template-columns:1fr}}
+
+/* Área do participante */
+#form-login{grid-template-columns:1fr}
+.painel{background:var(--branco);border:2px solid var(--verde);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.painel-cab{display:flex;justify-content:space-between;align-items:start;gap:12px}
+.painel-cab small{display:block;color:var(--tinta-suave);font-size:13px}
+.painel-cab strong{font:800 24px var(--f-display);font-stretch:90%}
+.painel p{margin:0;color:var(--tinta-suave)}
+
+/* FAQ */
+.faq{display:flex;flex-direction:column;gap:10px;max-width:820px}
+details{border:1px solid var(--linha);border-radius:12px;background:var(--branco)}
+summary{cursor:pointer;padding:16px 18px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--azul);font:800 20px/1 var(--f-display)}
+details[open] summary::after{content:"−"}
+details p{margin:0;padding:0 18px 16px;color:var(--tinta-suave)}
+
+/* App CTA + rodapé */
+.cta-app{background:var(--laranja);color:var(--branco)}
+.cta-app .in{display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;padding-block:44px}
+.cta-app h2{margin:0;color:var(--branco)}
+.cta-app p{margin:6px 0 0;opacity:.95;max-width:52ch}
+.cta-app .btn.contorno{border-color:var(--branco)}
+footer{background:var(--tinta);color:#F6E9DF;font-size:14px}
+footer .in{display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:space-between;padding-block:28px}
+footer a{color:#FFC79E}
+footer small{display:block;opacity:.75;max-width:60ch;margin-top:6px}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="in">
+    <a class="marca" href="#inicio" aria-label="Mesa de Editais, início"><span class="selo">ME</span><b>Mesa de Editais</b></a>
+    <nav aria-label="Seções da página">
+      <a href="#como">Como funciona</a>
+      <a href="#criterios">Critérios</a>
+      <a href="#radar">Editais abertos</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+    <div class="btns" style="display:flex;gap:8px">
+      <a class="btn contorno pq" id="topo-entrar" href="#entrar">Entrar</a>
+      <a class="btn pq" href="#cadastro">Cadastrar</a>
+    </div>
+  </div>
+</header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <!-- 1. Atabaque -->
+  <symbol id="per-atabaque" viewBox="0 0 130 150">
+    <ellipse cx="66" cy="145" rx="54" ry="4" fill="#2E1A0C" opacity=".12"/>
+    <path d="M78 72 L114 72 L105 140 L87 140 Z" fill="#D7263D"/>
+    <path d="M79.5 81 L112.5 81 L111.7 88 L80.4 88 Z" fill="#178A4C"/>
+    <path d="M85.6 125 L106.4 125 L105.7 132 L86.3 132 Z" fill="#178A4C"/>
+    <path d="M82 91 L108 123 M109 91 L84 123" stroke="#FFC93C" stroke-width="2.5" fill="none"/>
+    <path d="M87 140 L83 146 M105 140 L109 146" stroke="#5A2E0E" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="96" cy="72" rx="18" ry="5" fill="#FFF1D6" stroke="#8B5A2B" stroke-width="2"/>
+    <path d="M38 118 L36 139 M52 118 L54 139" stroke="#6B3E26" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="33" cy="141" rx="7.5" ry="3.6" fill="#EE6A12"/><ellipse cx="57" cy="141" rx="7.5" ry="3.6" fill="#EE6A12"/>
+    <path d="M30 64 Q46 56 62 64 L70 122 L22 122 Z" fill="#7A4DF0"/>
+    <g fill="#FFFFFF"><circle cx="38" cy="86" r="2.3"/><circle cx="52" cy="96" r="2.3"/><circle cx="41" cy="106" r="2.3"/><circle cx="59" cy="113" r="2.3"/><circle cx="31" cy="115" r="2.3"/><circle cx="56" cy="78" r="2.3"/></g>
+    <rect x="42" y="50" width="8" height="10" fill="#6B3E26"/>
+    <path d="M58 70 Q70 79 84 67" stroke="#6B3E26" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M36 70 Q62 54 98 63" stroke="#6B3E26" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <circle cx="85" cy="66" r="4.8" fill="#6B3E26"/><circle cx="99" cy="63" r="4.8" fill="#6B3E26"/>
+    <circle cx="46" cy="40" r="15" fill="#6B3E26"/>
+    <path d="M30 40 Q29 17 47 16 Q65 17 63 38 Q57 27 46 27 Q36 28 30 40 Z" fill="#FFB703"/>
+    <path d="M33 29 Q46 25 60 29" stroke="#EE6A12" stroke-width="3" fill="none"/>
+    <circle cx="62" cy="21" r="6.5" fill="#EE6A12"/><circle cx="66" cy="15" r="4" fill="#FFB703"/>
+    <path d="M39 42 Q41 39 43 42 M49 42 Q51 39 53 42" stroke="#2E1A0C" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M40 47 Q46 55 52 47 Z" fill="#FFFFFF" stroke="#2E1A0C" stroke-width="1.6" stroke-linejoin="round"/>
+    <circle cx="36.5" cy="46" r="2.8" fill="#E8457E" opacity=".55"/><circle cx="55.5" cy="46" r="2.8" fill="#E8457E" opacity=".55"/>
+    <circle cx="31" cy="46" r="2.3" fill="#FFC93C"/>
+    <path d="M88 54 L90 47 M97 51 L101 44 M106 57 L113 52" stroke="#EE6A12" stroke-width="2.6" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- 2. Saxofone -->
+  <symbol id="per-sax" viewBox="0 0 130 150">
+    <ellipse cx="62" cy="145" rx="50" ry="4" fill="#2E1A0C" opacity=".12"/>
+    <path d="M58 104 L55 139 L64 139 L66 104 Z M70 104 L72 139 L81 139 L79 104 Z" fill="#3B2A5C"/>
+    <ellipse cx="57" cy="141" rx="8.5" ry="3.6" fill="#2E1A0C"/><ellipse cx="79" cy="141" rx="8.5" ry="3.6" fill="#2E1A0C"/>
+    <path d="M54 64 Q68 56 82 64 L84 108 L52 108 Z" fill="#FFB703"/>
+    <path d="M54 66 L62 66 L68 86 L74 66 L82 66 L84 108 L52 108 Z" fill="#E8457E"/>
+    <circle cx="66" cy="96" r="1.8" fill="#FFFFFF"/><circle cx="70" cy="96" r="1.8" fill="#FFFFFF"/>
+    <rect x="64" y="51" width="8" height="10" fill="#8D5524"/>
+    <path d="M63 63 L68 67 L63 71 Z M73 63 L68 67 L73 71 Z" fill="#2E1A0C"/>
+    <circle cx="68" cy="40" r="15" fill="#8D5524"/>
+    <ellipse cx="69" cy="27" rx="19" ry="4.5" fill="#2E1A0C"/>
+    <path d="M57 27 L59 12 Q69 8 79 12 L81 27 Z" fill="#2E1A0C"/>
+    <rect x="58" y="20" width="22" height="4" fill="#D7263D"/>
+    <path d="M62 39 Q64 36 66 39 M72 39 Q74 36 76 39" stroke="#2E1A0C" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="58" cy="47" r="5.5" fill="#A0632F"/>
+    <path d="M58 50 Q48 50 46 60 L42 102 Q41 114 31 114 Q21 114 22 104 L23 92" stroke="#7A5200" stroke-width="10.5" fill="none" stroke-linecap="round"/>
+    <path d="M58 50 Q48 50 46 60 L42 102 Q41 114 31 114 Q21 114 22 104 L23 92" stroke="#FFC93C" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+    <path d="M12 79 L34 79 L28.5 94 L17.5 94 Z" fill="#FFC93C" stroke="#7A5200" stroke-width="2.5" stroke-linejoin="round"/>
+    <g fill="#7A5200"><circle cx="45" cy="70" r="2"/><circle cx="44.2" cy="80" r="2"/><circle cx="43.4" cy="90" r="2"/></g>
+    <path d="M58 70 Q51 74 47 76" stroke="#FFB703" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M81 70 Q80 92 50 96" stroke="#FFB703" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <circle cx="46" cy="77" r="4.6" fill="#8D5524"/><circle cx="46" cy="96" r="4.6" fill="#8D5524"/>
+    <text x="10" y="62" font-size="20" font-family="Arial, sans-serif" font-weight="700" fill="#7A4DF0">♪</text>
+    <text x="22" y="42" font-size="22" font-family="Arial, sans-serif" font-weight="700" fill="#E8457E">♫</text>
+  </symbol>
+
+  <!-- 3. Pintura -->
+  <symbol id="per-pintora" viewBox="0 0 130 150">
+    <ellipse cx="62" cy="145" rx="56" ry="4" fill="#2E1A0C" opacity=".12"/>
+    <path d="M100 52 L88 143 M100 52 L114 143 M100 52 L101 143" stroke="#8B5A2B" stroke-width="3.5" stroke-linecap="round"/>
+    <rect x="82" y="58" width="37" height="40" rx="2" fill="#FFFFFF" stroke="#8B5A2B" stroke-width="2.5"/>
+    <rect x="84" y="60" width="33" height="36" fill="#DCEBFF"/>
+    <circle cx="109" cy="69" r="5.5" fill="#FFB703"/>
+    <path d="M84 96 Q93 78 103 90 Q109 82 117 92 L117 96 Z" fill="#0FA3A3"/>
+    <path d="M84 96 Q92 88 100 96 Z" fill="#7A4DF0"/>
+    <path d="M34 116 L33 139 M46 116 L48 139" stroke="#F1C27D" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="30" cy="141" rx="7.5" ry="3.6" fill="#7A4DF0"/><ellipse cx="51" cy="141" rx="7.5" ry="3.6" fill="#7A4DF0"/>
+    <path d="M27 72 Q40 64 53 72 L56 118 L25 118 Z" fill="#FFFFFF"/>
+    <path d="M28 82 L54 82 L56 118 L25 118 Z" fill="#0FA3A3"/>
+    <path d="M32 72 L32 84 M48 72 L48 84" stroke="#0FA3A3" stroke-width="4"/>
+    <rect x="35" y="90" width="11" height="9" rx="2" fill="#0B8C8C"/>
+    <g><circle cx="31" cy="106" r="2.6" fill="#E8457E"/><circle cx="49" cy="110" r="2.2" fill="#FFB703"/><circle cx="44" cy="103" r="1.8" fill="#7A4DF0"/></g>
+    <path d="M51 76 Q64 78 78 67" stroke="#F1C27D" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <circle cx="79" cy="67" r="4.4" fill="#F1C27D"/>
+    <path d="M80 66 L90 60" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"/><circle cx="91.5" cy="59" r="2.8" fill="#E8457E"/>
+    <path d="M30 77 Q22 84 18 90" stroke="#F1C27D" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M3 93 Q7 82 20 84 Q31 86 27 96 Q21 103 10 101 Q1 99 3 93 Z" fill="#E8C89A"/>
+    <g><circle cx="10" cy="91" r="2.4" fill="#D7263D"/><circle cx="17" cy="88" r="2.4" fill="#1D5FD6"/><circle cx="23" cy="92" r="2.4" fill="#FFB703"/><circle cx="14" cy="96" r="2.4" fill="#178A4C"/></g>
+    <rect x="36" y="58" width="8" height="10" fill="#F1C27D"/>
+    <circle cx="28" cy="31" r="7.5" fill="#C0392B"/>
+    <circle cx="40" cy="46" r="15" fill="#F1C27D"/>
+    <path d="M25 47 Q24 29 40 29 Q56 29 55 44 Q49 36 40 37 Q31 38 25 47 Z" fill="#C0392B"/>
+    <ellipse cx="44" cy="30" rx="14" ry="5" fill="#E8457E" transform="rotate(-14 44 30)"/>
+    <circle cx="46" cy="24" r="2" fill="#E8457E"/>
+    <circle cx="42" cy="47" r="2" fill="#2E1A0C"/><circle cx="51" cy="47" r="2" fill="#2E1A0C"/>
+    <path d="M41 53 Q46 58 51 53" stroke="#2E1A0C" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="37.5" cy="52" r="2.6" fill="#E8457E" opacity=".45"/><circle cx="54" cy="52" r="2.6" fill="#E8457E" opacity=".45"/>
+  </symbol>
+
+  <!-- 4. Leitura infantil -->
+  <symbol id="per-leitora" viewBox="0 0 130 150">
+    <ellipse cx="62" cy="145" rx="40" ry="4" fill="#2E1A0C" opacity=".12"/>
+    <path d="M53 120 L52 139 M67 120 L68 139" stroke="#C68642" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="50" cy="141" rx="7.5" ry="3.6" fill="#D7263D"/><ellipse cx="70" cy="141" rx="7.5" ry="3.6" fill="#D7263D"/>
+    <path d="M44 76 Q60 68 76 76 L86 124 L34 124 Z" fill="#FFB703"/>
+    <path d="M37 116 Q60 122 83 116" stroke="#EE6A12" stroke-width="4" fill="none"/>
+    <path d="M52 72 L60 80 L68 72" fill="#FFFFFF"/>
+    <rect x="56" y="60" width="8" height="10" fill="#C68642"/>
+    <path d="M46 80 Q40 88 44 94 M74 80 Q80 88 76 94" stroke="#C68642" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+    <path d="M40 84 L60 91 L80 84 L80 105 L60 112 L40 105 Z" fill="#7A4DF0"/>
+    <path d="M42 84 L60 90 L78 84 L78 103 L60 109 L42 103 Z" fill="#FFFFFF"/>
+    <path d="M60 90 L60 109" stroke="#7A4DF0" stroke-width="2"/>
+    <path d="M46 92 L56 95 M46 97 L56 100 M64 95 L74 92 M64 100 L74 97" stroke="#C9B8F5" stroke-width="1.8" stroke-linecap="round"/>
+    <circle cx="44" cy="96" r="4.4" fill="#C68642"/><circle cx="76" cy="96" r="4.4" fill="#C68642"/>
+    <circle cx="43" cy="34" r="9.5" fill="#2E1A0C"/><circle cx="77" cy="34" r="9.5" fill="#2E1A0C"/>
+    <circle cx="60" cy="49" r="15" fill="#C68642"/>
+    <path d="M45 48 Q45 32 60 32 Q75 32 75 48 Q69 40 60 40 Q51 40 45 48 Z" fill="#2E1A0C"/>
+    <path d="M49 38 L45 32 L52 33 Z M71 38 L75 32 L68 33 Z" fill="#E8457E"/>
+    <path d="M52 51 Q54 53 56 51 M64 51 Q66 53 68 51" stroke="#2E1A0C" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <ellipse cx="60" cy="57" rx="3" ry="2.6" fill="#2E1A0C"/>
+    <circle cx="50" cy="55" r="2.6" fill="#E8457E" opacity=".5"/><circle cx="70" cy="55" r="2.6" fill="#E8457E" opacity=".5"/>
+    <text x="86" y="80" font-size="18" font-family="Arial, sans-serif" font-weight="900" fill="#E8457E">A</text>
+    <text x="98" y="60" font-size="16" font-family="Arial, sans-serif" font-weight="900" fill="#7A4DF0">B</text>
+    <text x="106" y="40" font-size="15" font-family="Arial, sans-serif" font-weight="900" fill="#0FA3A3">C</text>
+    <path d="M90 40 l2 4.5 4.8 .4 -3.6 3.2 1.1 4.7 -4.3 -2.5 -4.3 2.5 1.1 -4.7 -3.6 -3.2 4.8 -.4 Z" fill="#FFB703"/>
+    <path d="M18 70 l1.5 3.3 3.6 .3 -2.7 2.4 .8 3.5 -3.2 -1.9 -3.2 1.9 .8 -3.5 -2.7 -2.4 3.6 -.3 Z" fill="#FFB703"/>
+  </symbol>
+
+  <!-- 5. Caricatura -->
+  <symbol id="per-desenhista" viewBox="0 0 130 150">
+    <ellipse cx="64" cy="145" rx="46" ry="4" fill="#2E1A0C" opacity=".12"/>
+    <path d="M50 104 L48 139 L57 139 L58 104 Z M64 104 L66 139 L75 139 L72 104 Z" fill="#3B2A5C"/>
+    <ellipse cx="51" cy="141" rx="8.5" ry="3.6" fill="#EE6A12"/><ellipse cx="72" cy="141" rx="8.5" ry="3.6" fill="#EE6A12"/>
+    <path d="M44 64 Q59 56 74 64 L77 108 L41 108 Z" fill="#0FA3A3"/>
+    <path d="M55 60 L59 66 L63 60" fill="#FFFFFF"/>
+    <rect x="55" y="50" width="8" height="10" fill="#E0AC69"/>
+    <path d="M47 70 Q52 92 62 98" stroke="#0FA3A3" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <g transform="rotate(-8 80 86)">
+      <rect x="62" y="64" width="38" height="44" rx="3" fill="#8B5A2B"/>
+      <rect x="65" y="67" width="32" height="38" rx="2" fill="#FFFFFF"/>
+      <circle cx="81" cy="84" r="10" fill="none" stroke="#2E1A0C" stroke-width="2"/>
+      <path d="M72 78 Q76 68 82 74 Q86 66 91 77" stroke="#2E1A0C" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="77" cy="82" r="1.5" fill="#2E1A0C"/><circle cx="85" cy="82" r="1.5" fill="#2E1A0C"/>
+      <path d="M81 83 Q87 88 81 89" stroke="#2E1A0C" stroke-width="1.8" fill="none"/>
+      <path d="M76 90 Q81 96 86 90" stroke="#2E1A0C" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M70 100 L92 100" stroke="#E8457E" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <circle cx="62" cy="98" r="4.6" fill="#E0AC69"/>
+    <path d="M73 68 Q92 52 106 58" stroke="#0FA3A3" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M110 54 L99 76" stroke="#FFB703" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M99 76 L97.5 79.5" stroke="#2E1A0C" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="107" cy="59" r="4.6" fill="#E0AC69"/>
+    <circle cx="59" cy="40" r="15" fill="#E0AC69"/>
+    <path d="M44 40 Q43 23 59 23 Q75 23 74 38 Q70 30 59 31 Q48 31 44 40 Z" fill="#4A2C17"/>
+    <path d="M45 43 Q47 58 59 58 Q71 58 73 43 Q69 51 59 51 Q49 51 45 43 Z" fill="#4A2C17"/>
+    <circle cx="53.5" cy="40" r="5" fill="#FFFFFF" fill-opacity=".35" stroke="#2E1A0C" stroke-width="2"/>
+    <circle cx="65" cy="40" r="5" fill="#FFFFFF" fill-opacity=".35" stroke="#2E1A0C" stroke-width="2"/>
+    <path d="M58.5 40 L60 40" stroke="#2E1A0C" stroke-width="2"/>
+    <circle cx="53.5" cy="40.5" r="1.6" fill="#2E1A0C"/><circle cx="65" cy="40.5" r="1.6" fill="#2E1A0C"/>
+    <path d="M54 50 Q59 54 64 50" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- 6. Pandeiro -->
+  <symbol id="per-pandeiro" viewBox="0 0 130 150">
+    <ellipse cx="62" cy="145" rx="46" ry="4" fill="#2E1A0C" opacity=".12"/>
+    <path d="M52 112 L50 139" stroke="#8D5524" stroke-width="7" stroke-linecap="round"/>
+    <path d="M66 112 Q72 126 82 132" stroke="#8D5524" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <ellipse cx="47" cy="141" rx="7.5" ry="3.6" fill="#7A4DF0"/><ellipse cx="86" cy="134" rx="7.5" ry="3.6" fill="#7A4DF0" transform="rotate(30 86 134)"/>
+    <path d="M42 90 L78 90 L96 118 Q60 128 24 118 Z" fill="#FFB703"/>
+    <path d="M28 114 Q60 123 92 114" stroke="#EE6A12" stroke-width="4" fill="none"/>
+    <path d="M34 104 Q60 111 86 104" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-dasharray="4 4"/>
+    <path d="M45 62 Q59 56 73 62 L76 92 L42 92 Z" fill="#E8457E"/>
+    <path d="M48 66 Q38 78 32 70" stroke="#8D5524" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+    <circle cx="31" cy="68" r="4.4" fill="#8D5524"/>
+    <path d="M71 65 Q84 54 90 38" stroke="#8D5524" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+    <circle cx="97" cy="28" r="13" fill="#F6E7C8" stroke="#8B5A2B" stroke-width="4"/>
+    <g fill="#FFC93C" stroke="#7A5200" stroke-width="1"><circle cx="97" cy="13.5" r="2.6"/><circle cx="111.5" cy="28" r="2.6"/><circle cx="97" cy="42.5" r="2.6"/><circle cx="82.5" cy="28" r="2.6"/></g>
+    <circle cx="90" cy="38" r="4.4" fill="#8D5524"/>
+    <path d="M110 12 L116 7 M114 20 L121 18 M106 6 L108 0" stroke="#EE6A12" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M46 40 Q42 58 44 74 M72 40 Q76 58 74 74" stroke="#2E1A0C" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <rect x="55" y="50" width="8" height="9" fill="#8D5524"/>
+    <circle cx="59" cy="42" r="14" fill="#8D5524"/>
+    <path d="M45 42 Q44 26 59 26 Q74 26 73 42 Q67 34 59 34 Q51 34 45 42 Z" fill="#2E1A0C"/>
+    <path d="M46 33 Q59 27 72 33" stroke="#0FA3A3" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M52 43 Q54 40 56 43 M62 43 Q64 40 66 43" stroke="#2E1A0C" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M52 48 Q59 56 66 48 Z" fill="#FFFFFF" stroke="#2E1A0C" stroke-width="1.6" stroke-linejoin="round"/>
+    <circle cx="49.5" cy="47" r="2.6" fill="#E8457E" opacity=".55"/><circle cx="68.5" cy="47" r="2.6" fill="#E8457E" opacity=".55"/>
+  </symbol>
+</svg>
+
+<main id="inicio">
+  <section class="hero">
+    <div class="in">
+      <div>
+        <div class="eyebrow">PNAB · Rouanet · LIC RS · Funarte · editais municipais</div>
+        <h1>Seu projeto cultural no formato que a <span>comissão pontua</span></h1>
+        <p class="sub">Cadastre seus projetos uma vez. A Mesa encontra os editais abertos, preenche a inscrição campo a campo e revisa tudo como um parecerista antes de você enviar.</p>
+        <div class="acoes">
+          <a class="btn" href="#cadastro">Quero me cadastrar</a>
+          <a class="btn contorno" href="#radar">Ver editais abertos</a>
+        </div>
+        <ul class="garantias">
+          <li>Feito por quem inscreve os próprios projetos</li>
+          <li>Seus dados protegidos pela LGPD</li>
+          <li>Celular e computador</li>
+        </ul>
+      </div>
+      <div class="ficha" aria-label="Exemplo de ficha de inscrição revisada pela Mesa">
+        <div class="cab"><strong>Ficha de inscrição · PNAB</strong><small>Revisão da Mesa</small></div>
+        <div class="linha-f"><b>Objeto e justificativa</b><span class="carimbo c-ok">Pronto</span><small>Responde o quê, quem, onde, quando e por quê na primeira frase.</small></div>
+        <div class="linha-f"><b>Metas e cronograma</b><span class="carimbo c-ok">Pronto</span><small>4 metas com número e prazo, cada uma com rubrica no orçamento.</small></div>
+        <div class="linha-f"><b>Planilha orçamentária</b><span class="carimbo c-analise">Em análise</span><small>Total precisa bater com o teto da categoria.</small></div>
+        <div class="linha-f"><b>Ficha técnica</b><span class="carimbo c-erro">Falta dado</span><small>Sem minicurrículo de 2 integrantes: o critério F pode zerar.</small></div>
+        <div class="nota"><span>Nota estimada pela matriz A–G</span><b>58/70</b></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="faixa"><div class="in"><span>Funciona com</span><span>PNAB</span><span>Lei Paulo Gustavo</span><span>Lei Rouanet</span><span>LIC RS</span><span>FAC RS</span><span>Funarte</span><span>ProAC</span><span>Editais municipais</span></div></div>
+
+  <section class="bloco" id="como">
+    <div class="in">
+      <div class="tit">
+        <div class="eyebrow">Como funciona</div>
+        <h2>Do rascunho à inscrição em quatro etapas</h2>
+        <p>Você traz a ideia, o território e a sua trajetória. A Mesa organiza, cruza com o edital e escreve na linguagem técnica que pontua.</p>
+      </div>
+      <div class="passos">
+        <div class="passo"><h3>Cadastre seus projetos</h3><p>Música, artes visuais, livro, audiovisual. Cada projeto fica salvo com equipe, público, acessibilidade e orçamento.</p></div>
+        <div class="passo"><h3>Escolha o edital</h3><p>O radar mostra os editais abertos e dá uma nota de encaixe para cada projeto seu.</p></div>
+        <div class="passo"><h3>Inscrição campo a campo</h3><p>A Mesa lê o edital, respeita os limites de caracteres e marca o que falta em vez de inventar dados.</p></div>
+        <div class="passo"><h3>Revise como a comissão</h3><p>Nota estimada por critério, risco de inabilitação e as três correções que mais sobem a nota.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco alt" id="criterios">
+    <div class="in">
+      <div class="tit">
+        <div class="eyebrow">O que a comissão avalia</div>
+        <h2>A matriz que decide quem é aprovado</h2>
+        <p>A maioria dos editais da PNAB segue o modelo do Ministério da Cultura. A Mesa escreve cada seção para dar evidência a um critério.</p>
+      </div>
+      <div class="matriz-wrap">
+        <div class="tabela">
+          <table>
+            <thead><tr><th></th><th>Critério obrigatório</th><th>Pontos</th></tr></thead>
+            <tbody>
+              <tr><td class="l">A</td><td>Coerência entre objeto, justificativa e metas</td><td class="n">até 10</td></tr>
+              <tr><td class="l">B</td><td>Relevância para o cenário cultural local</td><td class="n">até 10</td></tr>
+              <tr><td class="l">C</td><td>Integração comunitária e impacto social</td><td class="n">até 10</td></tr>
+              <tr><td class="l">D</td><td>Orçamento e cronograma coerentes com as metas</td><td class="n">até 10</td></tr>
+              <tr><td class="l">E</td><td>Plano de divulgação coerente</td><td class="n">até 10</td></tr>
+              <tr><td class="l">F</td><td>Ficha técnica compatível com as atividades</td><td class="n">até 10</td></tr>
+              <tr><td class="l">G</td><td>Trajetória artística e cultural do proponente</td><td class="n">até 10</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="escala">
+          <div class="item"><b style="color:var(--verde)">10</b><span>Atende plenamente. 6 satisfatório, 2 insatisfatório.</span></div>
+          <div class="item"><b style="color:var(--vermelho)">0</b><span>Nota zero em qualquer critério obrigatório desclassifica o projeto.</span></div>
+          <div class="item"><b style="color:var(--analise)">40</b><span>Nota mínima usual para o projeto ser considerado apto.</span></div>
+          <div class="item"><b style="color:var(--laranja-forte)">+5</b><span>Pontuação extra por perfil do proponente, cumulativa, conforme cada edital.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="radar">
+    <div class="in">
+      <div class="tit">
+        <div class="eyebrow">Radar de editais</div>
+        <h2>Editais abertos agora</h2>
+        <p id="radar-sub">Levantamento em fontes oficiais. O prazo é recalculado pela data de hoje; confirme sempre no edital completo.</p>
+      </div>
+      <div class="filtros" id="filtros">
+        <button class="chip" aria-pressed="true" data-f="abertos">Abertos</button>
+        <button class="chip" aria-pressed="false" data-f="RS">Rio Grande do Sul</button>
+        <button class="chip" aria-pressed="false" data-f="Nacional">Nacional</button>
+        <button class="chip" aria-pressed="false" data-f="preparar">Para se preparar</button>
+      </div>
+      <div class="radar" id="radar-lista"></div>
+    </div>
+  </section>
+
+  <section class="bloco" id="erros">
+    <div class="in">
+      <div class="tit">
+        <div class="eyebrow">Por que tantos projetos caem</div>
+        <h2>O que derruba uma inscrição e o que a Mesa faz no lugar</h2>
+        <p>Erros apontados por comissões em resultados e orientações publicadas nos ciclos da PNAB.</p>
+      </div>
+      <div class="compara">
+        <div class="lado erro">
+          <h3>O que reprova</h3>
+          <ul>
+            <li>Deixar de cumprir um item obrigatório do objeto</li>
+            <li>Descrição vaga, fora do modelo do plano de trabalho</li>
+            <li>Total do orçamento diferente do teto da categoria</li>
+            <li>Equipe sem minicurrículo de cada integrante</li>
+            <li>Portfólio sem comprovação com data e local</li>
+            <li>Acessibilidade genérica ou ausente</li>
+          </ul>
+        </div>
+        <div class="lado certo">
+          <h3>Com a Mesa</h3>
+          <ul>
+            <li>Lista de exigências do edital conferida item por item</li>
+            <li>Primeira frase com o quê, quem, onde, quando e por quê</li>
+            <li>Orçamento por rubrica somando o valor exato</li>
+            <li>Pendências marcadas para você completar</li>
+            <li>Roteiro de portfólio com o que comprovar</li>
+            <li>Acessibilidade nas três dimensões do modelo do MinC</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="quem">
+    <div class="in quem">
+      <div class="ini" aria-hidden="true">AA</div>
+      <div>
+        <div class="eyebrow" style="color:var(--laranja-forte)">Quem está por trás</div>
+        <h2>Feita por um proponente, para proponentes</h2>
+        <p>A Mesa de Editais nasceu para inscrever projetos próprios de música, artes visuais e literatura infantil sem depender de consultoria a cada edital.</p>
+        <p>Ela reúne o modelo oficial do Ministério da Cultura, as orientações das comissões e o que cada resultado ensina. A cada inscrição, a Mesa aprende.</p>
+        <p class="assin">Anderson Alves · Sapucaia do Sul / RS</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco alt" id="planos">
+    <div class="in">
+      <div class="tit">
+        <div class="eyebrow">Planos</div>
+        <h2>Lançamento em breve</h2>
+        <p>Os planos estão sendo definidos. Quem se cadastra agora entra na lista de lançamento e recebe o aviso primeiro.</p>
+      </div>
+      <div class="espera" id="espera">
+        <p><strong>Lista de lançamento aberta.</strong> Cadastre-se e receba pelo WhatsApp a abertura da Mesa e o radar de editais da sua região.</p>
+        <a class="btn" href="#cadastro">Entrar na lista</a>
+      </div>
+      <div class="planos" id="planos-grid" hidden></div>
+    </div>
+  </section>
+
+  <section class="bloco" id="cadastro">
+    <div class="in cad">
+      <div>
+        <div class="eyebrow" style="color:var(--laranja-forte)">Cadastro do participante</div>
+        <h2>Cadastre-se na Mesa</h2>
+        <p style="color:var(--tinta-suave);margin:0">Leva dois minutos. Com o seu perfil, a Mesa avisa quando abrir um edital que combina com a sua linguagem e a sua cidade.</p>
+        <ul class="lista-v">
+          <li>Radar de editais da sua região</li>
+          <li>Aviso do lançamento dos planos</li>
+          <li>Seus dados usados só para a Mesa de Editais</li>
+        </ul>
+      </div>
+      <form id="form-cad" novalidate>
+        <label class="full">Nome completo<input id="c-nome" autocomplete="name" required maxlength="120"></label>
+        <label>E-mail<input id="c-email" type="email" autocomplete="email" required maxlength="120"></label>
+        <label>WhatsApp com DDD<input id="c-whats" type="tel" inputmode="tel" autocomplete="tel" placeholder="(51) 99999-9999" required maxlength="20"></label>
+        <label>Cidade<input id="c-cidade" autocomplete="address-level2" required maxlength="80"></label>
+        <label>Estado<select id="c-uf" required><option value="">Selecione</option></select></label>
+        <label>Você é<select id="c-perfil" required>
+          <option value="">Selecione</option><option>Artista</option><option>Produtor(a) cultural</option><option>Coletivo</option><option>Associação ou OSC</option><option>Empresa da cultura</option><option>Estudante de produção cultural</option><option>Gestor(a) público(a)</option></select></label>
+        <label>Como se inscreve<select id="c-tipo">
+          <option value="">Ainda não sei</option><option>Pessoa física</option><option>MEI</option><option>Empresa</option><option>OSC / associação</option><option>Coletivo sem CNPJ</option></select></label>
+        <fieldset class="full"><legend>Linguagens</legend><div class="checks" id="c-lings"></div></fieldset>
+        <label>Crie uma senha<input id="c-senha" type="password" autocomplete="new-password" required minlength="8" maxlength="64" placeholder="Mínimo de 8 caracteres"></label>
+        <label>Repita a senha<input id="c-senha2" type="password" autocomplete="new-password" required minlength="8" maxlength="64"></label>
+        <label class="full">Seu projeto em uma frase <span class="opc">(opcional)</span><textarea id="c-projeto" maxlength="400" placeholder="Ex.: oficinas gratuitas de saxofone para jovens de escolas públicas."></textarea></label>
+        <div class="hp" aria-hidden="true"><label>Não preencha<input id="c-site" tabindex="-1" autocomplete="off"></label></div>
+        <label class="consent full"><input type="checkbox" id="c-lgpd" required> <span>Autorizo o uso dos meus dados pela Mesa de Editais para contato e avisos de editais, conforme a LGPD. Posso pedir a exclusão a qualquer momento.</span></label>
+        <div class="full"><button class="btn" type="submit" id="c-enviar" style="width:100%">Enviar cadastro</button></div>
+        <div class="full" id="c-aviso" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="bloco alt" id="entrar">
+    <div class="in cad">
+      <div>
+        <div class="eyebrow" style="color:var(--laranja-forte)">Área do participante</div>
+        <h2>Entrar na Mesa</h2>
+        <p style="color:var(--tinta-suave);margin:0">Use o e-mail e a senha do seu cadastro. Ainda não tem? <a href="#cadastro">Cadastre-se</a>.</p>
+      </div>
+      <div>
+        <form id="form-login" novalidate>
+          <label class="full">E-mail<input id="l-email" type="email" autocomplete="username" required maxlength="120"></label>
+          <label class="full">Senha<input id="l-senha" type="password" autocomplete="current-password" required maxlength="64"></label>
+          <div class="full" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
+            <button class="btn" type="submit" id="l-enviar">Entrar</button>
+            <a href="#" id="l-esqueci">Esqueci a senha</a>
+          </div>
+          <div class="full" id="l-aviso" aria-live="polite"></div>
+        </form>
+        <div class="painel" id="painel" hidden>
+          <div class="painel-cab"><div><small>Bem-vindo(a)</small><strong id="p-nome"></strong></div><span class="carimbo" id="p-plano"></span></div>
+          <p id="p-texto"></p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <a class="btn verde" id="p-app" href="#" target="_blank" rel="noopener" hidden>Abrir o app da Mesa</a>
+            <a class="btn contorno" href="#radar">Ver editais abertos</a>
+            <button class="btn contorno" type="button" id="p-sair">Sair</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="faq">
+    <div class="in">
+      <div class="tit"><div class="eyebrow">Dúvidas</div><h2>Perguntas frequentes</h2></div>
+      <div class="faq">
+        <details><summary>A Mesa garante a aprovação?</summary><p>Não. Quem aprova é a comissão de cada edital. A Mesa aumenta suas chances: escreve no formato dos critérios, aponta o que falta e revisa como um parecerista. Desconfie de quem prometer aprovação.</p></details>
+        <details><summary>Posso usar inteligência artificial em edital?</summary><p>Depende do edital. Alguns exigem processo autoral humano, e já houve comissão que inabilitou propostas por excesso de IA. A Mesa verifica o que cada edital diz, organiza e redige com os seus dados, e pede que você revise tudo com a sua voz. A obra artística é sempre sua.</p></details>
+        <details><summary>Preciso ter CNPJ?</summary><p>Não necessariamente. Muitos editais da PNAB aceitam pessoa física, MEI e coletivos sem CNPJ. Já a Lei de Incentivo do RS (LIC) exige cadastro no CEPC. A Mesa mostra quem pode se inscrever em cada edital.</p></details>
+        <details><summary>A Mesa inventa dados para preencher a inscrição?</summary><p>Não. Quando falta uma informação, ela marca [COMPLETAR] e lista as pendências. Número, parceria ou comprovação inventada leva à desclassificação.</p></details>
+        <details><summary>Quais editais entram no radar?</summary><p>Editais nacionais (Ministério da Cultura, Funarte), do Rio Grande do Sul (Sedac, Pró-Cultura) e municipais. Você também pode adicionar qualquer edital colando o texto no app.</p></details>
+        <details><summary>O que acontece com os meus dados?</summary><p>São usados só pela Mesa de Editais, para contato e avisos de editais. Você pode pedir a exclusão pelo WhatsApp a qualquer momento.</p></details>
+        <details><summary>Quanto vai custar?</summary><p>Os planos estão sendo definidos. Quem está na lista de lançamento recebe as condições primeiro.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-app">
+    <div class="in">
+      <div>
+        <h2>Já é participante?</h2>
+        <p>Entre com seu e-mail e senha para acessar a sua Mesa: projetos, radar e inscrições.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <a class="btn contorno" href="#entrar">Entrar</a>
+        <a class="btn" href="#cadastro" style="border-color:var(--branco)">Cadastrar</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="in">
+    <div>
+      <strong>Mesa de Editais</strong> · Anderson Alves
+      <small>Ferramenta de apoio à escrita de projetos culturais. A aprovação depende exclusivamente da comissão de cada edital. Prazos e regras mudam por errata: confirme sempre na fonte oficial.</small>
+    </div>
+    <div>
+      WhatsApp <span id="rod-whats">(51) 98416-8848</span><br>
+      <a href="#cadastro">Cadastro</a> · <a href="#entrar">Entrar</a> · <a href="#faq">Dúvidas</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+/* ===== Configuração: trocar amanhã, ao publicar no repositório próprio ===== */
+var CONFIG = {
+  APP_URL: "https://claude.ai/artifact/2Skkgy44hJmULNVe4QkxRM",
+  CADASTRO_URL: "",            /* endereço /exec do Apps Script da planilha "Mesa de Editais • Participantes" */
+  WHATSAPP: "5551984168848",
+  PLANOS_ATIVOS: false,
+  PLANOS: []                    /* ex.: {nome:"", preco:"", itens:[""], link:""} */
+};
+
+var $ = function(id){ return document.getElementById(id); };
+
+/* Separações de tela com as três silhuetas (ordem alterna a cada faixa) */
+(function(){
+  var figs = ["per-atabaque","per-sax","per-pintora","per-leitora","per-desenhista","per-pandeiro"], NS = "http://www.w3.org/2000/svg";
+  document.querySelectorAll("main > section.bloco").forEach(function(sec, i){
+    var d = document.createElement("div"); d.className = "divisor"; d.setAttribute("aria-hidden","true");
+    var w = document.createElement("div"); w.className = "in";
+    for(var k = 0; k < 3; k++){
+      var s = document.createElementNS(NS,"svg"); s.setAttribute("viewBox","0 0 130 150");
+      var u = document.createElementNS(NS,"use"); u.setAttribute("href","#"+figs[(i+[0,1,3][k])%6]); s.appendChild(u); w.appendChild(s);
+    }
+    /* notas musicais e pingos de tinta flutuando */
+    var cores = ["#EE6A12","#7A4DF0","#E8457E","#0FA3A3","#FFB703"];
+    for(var n = 0; n < 7; n++){
+      var e;
+      if(n % 2){ e = document.createElement("span"); e.className = "pingo"; e.style.background = cores[(n+i)%cores.length]; }
+      else { e = document.createElement("span"); e.className = "enfeite"; e.style.color = cores[(n+i+2)%cores.length]; e.textContent = ["♪","♫","♬","♩"][(n+i)%4]; }
+      e.style.left = (6 + n*13 + (i*7)%9) + "%"; e.style.top = (14 + ((n*29 + i*17) % 46)) + "px"; e.style.animationDelay = (-n*0.45) + "s";
+      d.appendChild(e);
+    }
+    d.appendChild(w); sec.parentNode.insertBefore(d, sec);
+  });
+})();
+$("p-app").href = CONFIG.APP_URL;
+
+/* Anti-moldura só no site publicado (não na pré-visualização) */
+if(/github\.io$|mesadeeditais/i.test(location.hostname) && window.top !== window.self){ try{ window.top.location = window.location.href; }catch(e){ document.body.textContent = "Abra a Mesa de Editais pelo endereço oficial."; } }
+
+/* ===== Radar ===== */
+var hoje = new Date(); hoje.setHours(0,0,0,0);
+var RADAR = [
+  {esfera:"RS",titulo:"Edital 43/2026 – Comercialização de Longa-Metragem para Sala de Cinema",org:"Sedac RS · Iecine · FAC + FSA",fim:"2027-01-14",valor:"Parte de R$ 19,6 mi",quem:"Distribuidora independente com CEPC",url:"https://www.brasildefato.com.br/2026/10/24/rio-grande-do-sul-abre-editais-de-r-196-milhoes-para-o-setor-audiovisual/"},
+  {esfera:"RS",titulo:"Edital 44/2026 – Produção e Complementação de Longa-Metragem",org:"Sedac RS · Iecine · FAC + FSA",fim:"2027-01-14",valor:"Parte de R$ 19,6 mi",quem:"Produtora com CEPC",url:"https://www.brasildefato.com.br/2026/10/24/rio-grande-do-sul-abre-editais-de-r-196-milhoes-para-o-setor-audiovisual/"},
+  {esfera:"RS",titulo:"Prêmio Açorianos de Dança 2026",org:"SMC Porto Alegre",fim:"2026-11-29",valor:"Premiação",quem:"Artistas e grupos de dança",url:"https://prefeitura.poa.br/smc/editais"},
+  {esfera:"Nacional",titulo:"Intercâmbio Cultural – Circulação Audiovisual no Exterior",org:"Ministério da Cultura",fim:"2026-11-06",valor:"R$ 1,0 mi",quem:"Agentes do audiovisual",url:"https://capitaai.com.br/editais-abertos/ministerio-da-cultura"},
+  {esfera:"Nacional",titulo:"Ciclo de Saberes com Mestras e Mestres das Culturas Tradicionais",org:"MinC · MEC",fim:"2026-11-08",valor:"R$ 500 mil",quem:"Universidades",url:"https://capitaai.com.br/editais-abertos/ministerio-da-cultura"},
+  {esfera:"Nacional",titulo:"Escolas Livres de Formação em Arte e Cultura",org:"Ministério da Cultura",fim:null,valor:"Ver edital",quem:"OSC",url:"https://capitaai.com.br/editais-abertos/ministerio-da-cultura"},
+  {esfera:"Nacional",titulo:"Biblioteca Comunitária é Cultura Viva",org:"Ministério da Cultura",fim:null,valor:"Ver edital",quem:"OSC e outros perfis",url:"https://capitaai.com.br/editais-abertos/ministerio-da-cultura"},
+  {esfera:"Nacional",titulo:"Funarte Aberta 2026 – Ocupação dos espaços da Funarte",org:"Funarte",fim:null,valor:"Cessão de espaço",quem:"Artistas de todo o Brasil",url:"https://www.gov.br/funarte/pt-br/editais-1/2026/programa-funarte-aberta/programa-funarte-aberta-2026-2013-ocupacao-dos-espacos-culturais-da-funarte-complexo-funarte-minas-gerais/edital-funarte-aberta-mg.pdf"},
+  {esfera:"RS",preparar:true,titulo:"LIC RS – Lei de Incentivo à Cultura (ciclo anual)",org:"Sedac RS",fim:"2026-09-30",valor:"Captação via ICMS",quem:"Produtores com CEPC",url:"https://cultura.rs.gov.br/editais-2026-6a2af7987dada"},
+  {esfera:"RS",preparar:true,titulo:"PNAB Sapucaia do Sul – próximo ciclo",org:"Prefeitura de Sapucaia do Sul",fim:"2026-07-31",valor:"Ver editais",quem:"Agentes culturais do município",url:"https://www.sapucaiadosul.rs.gov.br/noticias/resultados-finais-da-pnab-2026-ja-estao-disponiveis/"}
+];
+function status(e){
+  if(!e.fim) return {t:"Fluxo contínuo",c:"c-ok",a:true};
+  var dias = Math.round((new Date(e.fim+"T00:00:00") - hoje)/86400000);
+  if(dias < 0) return {t:"Encerrado",c:"c-off",a:false};
+  if(dias <= 7) return {t:(dias===0?"Fecha hoje":"Fecha em "+dias+"d"),c:"c-erro",a:true};
+  if(dias <= 30) return {t:"Fecha em "+dias+"d",c:"c-analise",a:true};
+  return {t:"Aberto",c:"c-ok",a:true};
+}
+function fmt(s){ return s ? new Date(s+"T00:00:00").toLocaleDateString("pt-BR") : "Contínuo"; }
+var filtro = "abertos";
+function el(tag, cls, txt){ var n=document.createElement(tag); if(cls) n.className=cls; if(txt!=null) n.textContent=txt; return n; }
+function renderRadar(){
+  var L = $("radar-lista"); L.textContent="";
+  var itens = RADAR.filter(function(e){ var s=status(e);
+    if(filtro==="abertos") return s.a; if(filtro==="preparar") return e.preparar || !s.a; return e.esfera===filtro && s.a; });
+  itens.sort(function(a,b){ return (a.fim||"9999").localeCompare(b.fim||"9999"); });
+  if(!itens.length){ L.append(el("p",null,"Nenhum edital neste filtro agora.")); return; }
+  itens.forEach(function(e){
+    var s=status(e), c=el("article","ed"), top=el("div","topo-ed"), w=el("div");
+    w.append(el("h3",null,e.titulo), el("div","org",e.org)); top.append(w, el("span","carimbo "+s.c, s.t));
+    var m=el("div","meta");
+    [["Prazo",fmt(e.fim)],["Valor",e.valor],["Quem",e.quem]].forEach(function(p){ var sp=el("span",null,p[0]+" "); sp.append(el("b",null,p[1])); m.append(sp); });
+    var a=el("a",null,"Ver fonte oficial ↗"); a.href=e.url; a.target="_blank"; a.rel="noopener";
+    c.append(top,m,a); L.append(c);
+  });
+}
+$("filtros").addEventListener("click", function(ev){ var b=ev.target.closest(".chip"); if(!b) return; filtro=b.dataset.f;
+  document.querySelectorAll(".chip").forEach(function(x){ x.setAttribute("aria-pressed", String(x===b)); }); renderRadar(); });
+renderRadar();
+
+/* ===== Planos (ligar quando definidos) ===== */
+if(CONFIG.PLANOS_ATIVOS && CONFIG.PLANOS.length){
+  $("espera").hidden = true; var g=$("planos-grid"); g.hidden=false;
+  CONFIG.PLANOS.forEach(function(p){ var c=el("div","plano"); c.append(el("h3",null,p.nome), el("div","preco",p.preco));
+    var ul=el("ul"); (p.itens||[]).forEach(function(i){ ul.append(el("li",null,i)); }); c.append(ul);
+    var a=el("a","btn",p.link?"Assinar":"Em breve"); if(p.link){ a.href=p.link; a.target="_blank"; a.rel="noopener"; } c.append(a); g.append(c); });
+}
+
+/* ===== Cadastro ===== */
+var UFS = "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
+UFS.forEach(function(u){ var o=el("option",null,u); o.value=u; $("c-uf").append(o); }); $("c-uf").value="RS";
+var LINGS = ["Música","Artes visuais","Audiovisual","Artes cênicas","Dança","Livro e literatura","Culturas populares","Patrimônio","Formação","Circo","Moda e design"];
+LINGS.forEach(function(l,i){ var lb=el("label"), cb=el("input"); cb.type="checkbox"; cb.value=l; cb.id="ling-"+i; lb.append(cb, document.createTextNode(l)); $("c-lings").append(lb); });
+
+function limpa(s, max){ return String(s||"").replace(/[<>\u0000-\u001F]/g," ").replace(/\s+/g," ").trim().slice(0,max||200); }
+function soDig(s){ return String(s||"").replace(/\D/g,""); }
+function aviso(tipo, texto, acoes){
+  var A=$("c-aviso"); A.textContent=""; if(!tipo) return;
+  var d=el("div","aviso "+tipo,texto); if(acoes){ var w=el("div","acoes"); acoes.forEach(function(a){ w.append(a); }); d.append(w); } A.append(d);
+}
+function marca(id, ok){ $(id).setAttribute("aria-invalid", ok?"false":"true"); return ok; }
+$("c-whats").addEventListener("input", function(){ var d=soDig(this.value).slice(0,11);
+  this.value = d.length>6 ? "("+d.slice(0,2)+") "+d.slice(2,d.length-4)+"-"+d.slice(-4) : d.length>2 ? "("+d.slice(0,2)+") "+d.slice(2) : d; });
+
+$("form-cad").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  if($("c-site").value){ aviso("ok","Cadastro recebido."); return; }
+  var ok = true;
+  ok = marca("c-nome", limpa($("c-nome").value).split(" ").length >= 2) && ok;
+  ok = marca("c-email", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($("c-email").value.trim())) && ok;
+  ok = marca("c-whats", soDig($("c-whats").value).length >= 10) && ok;
+  ok = marca("c-cidade", limpa($("c-cidade").value).length >= 2) && ok;
+  ok = marca("c-uf", !!$("c-uf").value) && ok;
+  ok = marca("c-perfil", !!$("c-perfil").value) && ok;
+  if(!ok){ aviso("erro","Confira os campos em vermelho: nome completo, e-mail, WhatsApp com DDD, cidade, estado e perfil."); return; }
+  var senha = $("c-senha").value;
+  if(!marca("c-senha", senha.length >= 8 && /[A-Za-z]/.test(senha) && /\d/.test(senha))){ aviso("erro","A senha precisa ter pelo menos 8 caracteres, com letras e números."); return; }
+  if(!marca("c-senha2", senha === $("c-senha2").value)){ aviso("erro","As duas senhas não são iguais."); return; }
+  if(!$("c-lgpd").checked){ aviso("erro","Para concluir, autorize o uso dos dados marcando a caixa da LGPD."); return; }
+  try{ var ult = Number(localStorage.getItem("mesa-cad-ult")||0); if(Date.now()-ult < 60000){ aviso("analise","Seu cadastro acabou de ser enviado. Aguarde um minuto para enviar outro."); return; } }catch(e){}
+
+  var dados = {
+    nome: limpa($("c-nome").value,120), email: limpa($("c-email").value,120).toLowerCase(), whatsapp: soDig($("c-whats").value),
+    cidade: limpa($("c-cidade").value,80), estado: $("c-uf").value, perfil: $("c-perfil").value, tipo: $("c-tipo").value || "Ainda não sei",
+    linguagens: Array.prototype.map.call(document.querySelectorAll("#c-lings input:checked"), function(c){ return c.value; }).join(", "),
+    projeto: limpa($("c-projeto").value,400), origem: location.hostname || "pagina", consentimento: "LGPD aceito " + new Date().toISOString()
+  };
+  var msg = "Olá, Anderson! Quero participar da Mesa de Editais.\n\nNome: "+dados.nome+"\nE-mail: "+dados.email+"\nWhatsApp: "+dados.whatsapp+"\nCidade: "+dados.cidade+"/"+dados.estado+"\nPerfil: "+dados.perfil+" ("+dados.tipo+")\nLinguagens: "+(dados.linguagens||"-")+(dados.projeto?"\nProjeto: "+dados.projeto:"");
+  var wa = el("a","btn verde","Enviar pelo WhatsApp"); wa.href = "https://wa.me/"+CONFIG.WHATSAPP+"?text="+encodeURIComponent(msg); wa.target="_blank"; wa.rel="noopener";
+
+  if(!CONFIG.CADASTRO_URL){
+    try{ localStorage.setItem("mesa-cad-ult", String(Date.now())); }catch(e){}
+    aviso("analise","Último passo: toque no botão verde para enviar seu cadastro pelo WhatsApp. Se o WhatsApp não abrir, mande seus dados para (51) 98416-8848.", [wa]);
+    return;
+  }
+  var bt=$("c-enviar"); bt.disabled=true; aviso("analise","Enviando seu cadastro…");
+  dados.acao = "cadastrar"; dados.senha = senha;
+  api(dados).then(function(r){
+      if(r && r.ok){
+        try{ localStorage.setItem("mesa-cad-ult", String(Date.now())); }catch(e){}
+        $("form-cad").reset(); $("c-uf").value="RS";
+        aviso("ok","Cadastro confirmado! Agora é só entrar com seu e-mail e senha.");
+        if(r.token) entrouCom(r);
+      } else if(r && r.erro === "email_existe"){
+        aviso("erro","Este e-mail já está cadastrado. Entre com a sua senha ou use “Esqueci a senha”.");
+      } else { aviso("erro", (r && r.mensagem) || "Não foi possível concluir o cadastro. Tente de novo ou envie pelo WhatsApp:", [wa]); }
+    })
+    .catch(function(){ aviso("erro","Sem conexão com o servidor agora. Envie seu cadastro pelo WhatsApp:", [wa]); })
+    .then(function(){ bt.disabled=false; dados.senha = null; });
+});
+
+/* ===== Acesso por e-mail e senha ===== */
+function api(corpo){
+  return fetch(CONFIG.CADASTRO_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(corpo)})
+    .then(function(r){ return r.json(); });
+}
+function avisoLogin(tipo, texto, acoes){
+  var A=$("l-aviso"); A.textContent=""; if(!tipo) return;
+  var d=el("div","aviso "+tipo,texto); if(acoes){ var w=el("div","acoes"); acoes.forEach(function(a){ w.append(a); }); d.append(w); } A.append(d);
+}
+var PLANOS_TXT = {
+  criador:{rot:"Criador · acesso livre", cls:"c-ok", txt:"Você tem acesso livre a todas as funções da Mesa, sem limite."},
+  ativo:{rot:"Plano ativo", cls:"c-ok", txt:"Seu acesso está liberado."},
+  analise:{rot:"Em análise", cls:"c-analise", txt:"Seu cadastro está em análise. Você recebe a confirmação pelo WhatsApp."},
+  lista:{rot:"Aguardando lançamento", cls:"c-erro", txt:"Você está na lista de lançamento. Assim que a Mesa abrir, seu acesso é liberado e você recebe o aviso pelo WhatsApp."},
+  vencido:{rot:"Plano vencido", cls:"c-erro", txt:"Seu plano venceu. Fale pelo WhatsApp para renovar."}
+};
+function entrouCom(r){
+  try{ localStorage.setItem("mesa-sessao", JSON.stringify({token:r.token, nome:r.nome, plano:r.plano, ate:Date.now()+7*86400000})); }catch(e){}
+  mostrarPainel(r.nome, r.plano);
+}
+function mostrarPainel(nome, plano){
+  var p = PLANOS_TXT[plano] || PLANOS_TXT.lista;
+  $("p-nome").textContent = nome || "Participante";
+  $("p-plano").textContent = p.rot; $("p-plano").className = "carimbo " + p.cls;
+  $("p-texto").textContent = p.txt;
+  $("p-app").hidden = !(plano === "criador" || plano === "ativo");
+  $("form-login").hidden = true; $("painel").hidden = false;
+  $("topo-entrar").textContent = "Minha Mesa";
+}
+function sair(){
+  var s=null; try{ s=JSON.parse(localStorage.getItem("mesa-sessao")||"null"); localStorage.removeItem("mesa-sessao"); }catch(e){}
+  if(s && s.token && CONFIG.CADASTRO_URL) api({acao:"sair", token:s.token}).catch(function(){});
+  $("painel").hidden = true; $("form-login").hidden = false; $("topo-entrar").textContent = "Entrar"; avisoLogin(null);
+}
+$("p-sair").addEventListener("click", sair);
+$("form-login").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var email = $("l-email").value.trim().toLowerCase(), senha = $("l-senha").value;
+  if(!marca("l-email", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) | !marca("l-senha", senha.length >= 1)){ avisoLogin("erro","Preencha e-mail e senha."); return; }
+  if(!CONFIG.CADASTRO_URL){ avisoLogin("analise","O acesso por e-mail e senha está sendo ativado. Enquanto isso, fale com a Mesa pelo WhatsApp (51) 98416-8848."); return; }
+  var bt=$("l-enviar"); bt.disabled=true; avisoLogin("analise","Conferindo seu acesso…");
+  api({acao:"entrar", email:email, senha:senha}).then(function(r){
+    if(r && r.ok){ $("l-senha").value=""; avisoLogin(null); entrouCom(r); }
+    else if(r && r.erro === "bloqueado"){ avisoLogin("erro","Muitas tentativas. Aguarde 15 minutos e tente de novo."); }
+    else { avisoLogin("erro","E-mail ou senha incorretos."); }
+  }).catch(function(){ avisoLogin("erro","Sem conexão com o servidor agora. Tente de novo em instantes."); })
+    .then(function(){ bt.disabled=false; });
+});
+$("l-esqueci").addEventListener("click", function(ev){
+  ev.preventDefault();
+  var email = $("l-email").value.trim();
+  var wa = el("a","btn verde","Pedir nova senha pelo WhatsApp");
+  wa.href = "https://wa.me/"+CONFIG.WHATSAPP+"?text="+encodeURIComponent("Olá! Esqueci minha senha da Mesa de Editais. Meu e-mail de cadastro é: "+(email||"[seu e-mail]"));
+  wa.target="_blank"; wa.rel="noopener";
+  avisoLogin("analise","Por segurança, a nova senha é liberada depois de confirmarmos que o e-mail é seu.", [wa]);
+});
+/* Retoma a sessão salva e confere no servidor */
+(function(){
+  var s=null; try{ s=JSON.parse(localStorage.getItem("mesa-sessao")||"null"); }catch(e){}
+  if(!s || !s.token || !(s.ate > Date.now())){ try{ localStorage.removeItem("mesa-sessao"); }catch(e){} return; }
+  mostrarPainel(s.nome, s.plano);
+  if(CONFIG.CADASTRO_URL) api({acao:"sessao", token:s.token}).then(function(r){ if(r && r.ok) entrouCom(Object.assign(r,{token:s.token})); else sair(); }).catch(function(){});
+})();
+})();
+</script>
+</body>
+</html>
