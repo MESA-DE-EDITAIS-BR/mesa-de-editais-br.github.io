@@ -9,10 +9,15 @@ Página de apresentação da **Mesa de Editais**: radar de editais culturais abe
 - `index.html` — a página completa (um arquivo só).
 - `servidor/planilha_apps_script.gs` — servidor de cadastro e login (Google Apps Script ligado à planilha). Não contém senhas nem segredos: eles ficam nas Propriedades do script.
 
-## Ativar o cadastro e o login
-1. Criar a planilha "Mesa de Editais • Participantes" e colar o `.gs` em Extensões → Apps Script.
-2. Em Propriedades do script: `CRIADOR_EMAILS` e `PIMENTA`.
-3. Implantar como App da Web (Executar como: Eu · Acesso: Qualquer pessoa).
-4. Colocar o endereço `/exec` em `CONFIG.CADASTRO_URL` no `index.html`.
+## Cadastro, login e senha (desde 09/11/2026)
+A Mesa usa o **servidor da Central Marca & Estratégia Tecnologia** (um servidor para todos os apps):
+- inscrição gravada na planilha da Central (aba Contas + licença "mesa-de-editais");
+- confirmação do e-mail por código de 6 dígitos;
+- senha repetida na inscrição e na troca;
+- "Esqueci a senha" com código enviado ao e-mail cadastrado;
+- nada de inscrição pelo WhatsApp.
+
+Para ativar: implante `servidor/central.gs` do repositório da Central e cole o endereço `/exec` em `CONFIG.CENTRAL_URL` no `index.html`.
+O antigo `servidor/planilha_apps_script.gs` ficou obsoleto e não precisa ser implantado.
 
 Ferramenta de apoio. A aprovação depende exclusivamente da comissão de cada edital.

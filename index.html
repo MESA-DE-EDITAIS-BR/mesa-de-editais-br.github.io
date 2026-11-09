@@ -601,7 +601,7 @@ footer small{display:block;opacity:.75;max-width:60ch;margin-top:6px}
         <p>Os planos estão sendo definidos. Quem se cadastra agora entra na lista de lançamento e recebe o aviso primeiro.</p>
       </div>
       <div class="espera" id="espera">
-        <p><strong>Lista de lançamento aberta.</strong> Cadastre-se e receba pelo WhatsApp a abertura da Mesa e o radar de editais da sua região.</p>
+        <p><strong>Lista de lançamento aberta.</strong> Cadastre-se e receba por e-mail a abertura da Mesa e o radar de editais da sua região.</p>
         <a class="btn" href="#cadastro">Entrar na lista</a>
       </div>
       <div class="planos" id="planos-grid" hidden></div>
@@ -623,7 +623,7 @@ footer small{display:block;opacity:.75;max-width:60ch;margin-top:6px}
       <form id="form-cad" novalidate>
         <label class="full">Nome completo<input id="c-nome" autocomplete="name" required maxlength="120"></label>
         <label>E-mail<input id="c-email" type="email" autocomplete="email" required maxlength="120"></label>
-        <label>WhatsApp com DDD<input id="c-whats" type="tel" inputmode="tel" autocomplete="tel" placeholder="(51) 99999-9999" required maxlength="20"></label>
+        <label>WhatsApp com DDD <span class="opc">(opcional)</span><input id="c-whats" type="tel" inputmode="tel" autocomplete="tel" placeholder="(51) 99999-9999" maxlength="20"></label>
         <label>Cidade<input id="c-cidade" autocomplete="address-level2" required maxlength="80"></label>
         <label>Estado<select id="c-uf" required><option value="">Selecione</option></select></label>
         <label>Você é<select id="c-perfil" required>
@@ -635,7 +635,7 @@ footer small{display:block;opacity:.75;max-width:60ch;margin-top:6px}
         <label>Repita a senha<input id="c-senha2" type="password" autocomplete="new-password" required minlength="8" maxlength="64"></label>
         <label class="full">Seu projeto em uma frase <span class="opc">(opcional)</span><textarea id="c-projeto" maxlength="400" placeholder="Ex.: oficinas gratuitas de saxofone para jovens de escolas públicas."></textarea></label>
         <div class="hp" aria-hidden="true"><label>Não preencha<input id="c-site" tabindex="-1" autocomplete="off"></label></div>
-        <label class="consent full"><input type="checkbox" id="c-lgpd" required> <span>Autorizo o uso dos meus dados pela Mesa de Editais para contato e avisos de editais, conforme a LGPD. Posso pedir a exclusão a qualquer momento.</span></label>
+        <label class="consent full"><input type="checkbox" id="c-lgpd" required> <span>Li e aceito os <a href="https://marca-estrategia-tecnologia.github.io/termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="https://marca-estrategia-tecnologia.github.io/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>, e autorizo o uso dos meus dados pela Mesa de Editais para contato e avisos de editais, conforme a LGPD.</span></label>
         <div class="full"><button class="btn" type="submit" id="c-enviar" style="width:100%">Enviar cadastro</button></div>
         <div class="full" id="c-aviso" aria-live="polite"></div>
       </form>
@@ -659,6 +659,7 @@ footer small{display:block;opacity:.75;max-width:60ch;margin-top:6px}
           </div>
           <div class="full" id="l-aviso" aria-live="polite"></div>
         </form>
+        <div id="l-passo" aria-live="polite"></div>
         <div class="painel" id="painel" hidden>
           <div class="painel-cab"><div><small>Bem-vindo(a)</small><strong id="p-nome"></strong></div><span class="carimbo" id="p-plano"></span></div>
           <p id="p-texto"></p>
@@ -681,7 +682,7 @@ footer small{display:block;opacity:.75;max-width:60ch;margin-top:6px}
         <details><summary>Preciso ter CNPJ?</summary><p>Não necessariamente. Muitos editais da PNAB aceitam pessoa física, MEI e coletivos sem CNPJ. Já a Lei de Incentivo do RS (LIC) exige cadastro no CEPC. A Mesa mostra quem pode se inscrever em cada edital.</p></details>
         <details><summary>A Mesa inventa dados para preencher a inscrição?</summary><p>Não. Quando falta uma informação, ela marca [COMPLETAR] e lista as pendências. Número, parceria ou comprovação inventada leva à desclassificação.</p></details>
         <details><summary>Quais editais entram no radar?</summary><p>Editais nacionais (Ministério da Cultura, Funarte), do Rio Grande do Sul (Sedac, Pró-Cultura) e municipais. Você também pode adicionar qualquer edital colando o texto no app.</p></details>
-        <details><summary>O que acontece com os meus dados?</summary><p>São usados só pela Mesa de Editais, para contato e avisos de editais. Você pode pedir a exclusão pelo WhatsApp a qualquer momento.</p></details>
+        <details><summary>O que acontece com os meus dados?</summary><p>São usados só pela Mesa de Editais, para contato e avisos de editais. Você pode pedir a correção ou a exclusão a qualquer momento pelo e-mail consultoranderson.invest@gmail.com.</p></details>
         <details><summary>Quanto vai custar?</summary><p>Os planos estão sendo definidos. Quem está na lista de lançamento recebe as condições primeiro.</p></details>
       </div>
     </div>
@@ -720,8 +721,10 @@ footer small{display:block;opacity:.75;max-width:60ch;margin-top:6px}
 /* ===== Configuração: trocar amanhã, ao publicar no repositório próprio ===== */
 var CONFIG = {
   APP_URL: "https://claude.ai/artifact/2Skkgy44hJmULNVe4QkxRM",
-  CADASTRO_URL: "",            /* endereço /exec do Apps Script da planilha "Mesa de Editais • Participantes" */
-  WHATSAPP: "5551984168848",
+  CENTRAL_URL: "",             /* endereço /exec do servidor da Central (servidor/central.gs no repositório da Central) */
+  APP: "mesa-de-editais",
+  EMAIL: "consultoranderson.invest@gmail.com",
+  PORTAL: "https://marca-estrategia-tecnologia.github.io/",
   PLANOS_ATIVOS: false,
   PLANOS: []                    /* ex.: {nome:"", preco:"", itens:[""], link:""} */
 };
@@ -823,85 +826,125 @@ function marca(id, ok){ $(id).setAttribute("aria-invalid", ok?"false":"true"); r
 $("c-whats").addEventListener("input", function(){ var d=soDig(this.value).slice(0,11);
   this.value = d.length>6 ? "("+d.slice(0,2)+") "+d.slice(2,d.length-4)+"-"+d.slice(-4) : d.length>2 ? "("+d.slice(0,2)+") "+d.slice(2) : d; });
 
-$("form-cad").addEventListener("submit", function(ev){
-  ev.preventDefault();
-  if($("c-site").value){ aviso("ok","Cadastro recebido."); return; }
-  var ok = true;
-  ok = marca("c-nome", limpa($("c-nome").value).split(" ").length >= 2) && ok;
-  ok = marca("c-email", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($("c-email").value.trim())) && ok;
-  ok = marca("c-whats", soDig($("c-whats").value).length >= 10) && ok;
-  ok = marca("c-cidade", limpa($("c-cidade").value).length >= 2) && ok;
-  ok = marca("c-uf", !!$("c-uf").value) && ok;
-  ok = marca("c-perfil", !!$("c-perfil").value) && ok;
-  if(!ok){ aviso("erro","Confira os campos em vermelho: nome completo, e-mail, WhatsApp com DDD, cidade, estado e perfil."); return; }
-  var senha = $("c-senha").value;
-  if(!marca("c-senha", senha.length >= 8 && /[A-Za-z]/.test(senha) && /\d/.test(senha))){ aviso("erro","A senha precisa ter pelo menos 8 caracteres, com letras e números."); return; }
-  if(!marca("c-senha2", senha === $("c-senha2").value)){ aviso("erro","As duas senhas não são iguais."); return; }
-  if(!$("c-lgpd").checked){ aviso("erro","Para concluir, autorize o uso dos dados marcando a caixa da LGPD."); return; }
-  try{ var ult = Number(localStorage.getItem("mesa-cad-ult")||0); if(Date.now()-ult < 60000){ aviso("analise","Seu cadastro acabou de ser enviado. Aguarde um minuto para enviar outro."); return; } }catch(e){}
-
-  var dados = {
-    nome: limpa($("c-nome").value,120), email: limpa($("c-email").value,120).toLowerCase(), whatsapp: soDig($("c-whats").value),
-    cidade: limpa($("c-cidade").value,80), estado: $("c-uf").value, perfil: $("c-perfil").value, tipo: $("c-tipo").value || "Ainda não sei",
-    linguagens: Array.prototype.map.call(document.querySelectorAll("#c-lings input:checked"), function(c){ return c.value; }).join(", "),
-    projeto: limpa($("c-projeto").value,400), origem: location.hostname || "pagina", consentimento: "LGPD aceito " + new Date().toISOString()
-  };
-  var msg = "Olá, Anderson! Quero participar da Mesa de Editais.\n\nNome: "+dados.nome+"\nE-mail: "+dados.email+"\nWhatsApp: "+dados.whatsapp+"\nCidade: "+dados.cidade+"/"+dados.estado+"\nPerfil: "+dados.perfil+" ("+dados.tipo+")\nLinguagens: "+(dados.linguagens||"-")+(dados.projeto?"\nProjeto: "+dados.projeto:"");
-  var wa = el("a","btn verde","Enviar pelo WhatsApp"); wa.href = "https://wa.me/"+CONFIG.WHATSAPP+"?text="+encodeURIComponent(msg); wa.target="_blank"; wa.rel="noopener";
-
-  if(!CONFIG.CADASTRO_URL){
-    try{ localStorage.setItem("mesa-cad-ult", String(Date.now())); }catch(e){}
-    aviso("analise","Último passo: toque no botão verde para enviar seu cadastro pelo WhatsApp. Se o WhatsApp não abrir, mande seus dados para (51) 98416-8848.", [wa]);
-    return;
-  }
-  var bt=$("c-enviar"); bt.disabled=true; aviso("analise","Enviando seu cadastro…");
-  dados.acao = "cadastrar"; dados.senha = senha;
-  api(dados).then(function(r){
-      if(r && r.ok){
-        try{ localStorage.setItem("mesa-cad-ult", String(Date.now())); }catch(e){}
-        $("form-cad").reset(); $("c-uf").value="RS";
-        aviso("ok","Cadastro confirmado! Agora é só entrar com seu e-mail e senha.");
-        if(r.token) entrouCom(r);
-      } else if(r && r.erro === "email_existe"){
-        aviso("erro","Este e-mail já está cadastrado. Entre com a sua senha ou use “Esqueci a senha”.");
-      } else { aviso("erro", (r && r.mensagem) || "Não foi possível concluir o cadastro. Tente de novo ou envie pelo WhatsApp:", [wa]); }
-    })
-    .catch(function(){ aviso("erro","Sem conexão com o servidor agora. Envie seu cadastro pelo WhatsApp:", [wa]); })
-    .then(function(){ bt.disabled=false; dados.senha = null; });
-});
-
-/* ===== Acesso por e-mail e senha ===== */
+/* ===== Cadastro, login e senha: servidor da Central (planilha + e-mail) ===== */
 function api(corpo){
-  return fetch(CONFIG.CADASTRO_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(corpo)})
+  corpo.app = CONFIG.APP;
+  return fetch(CONFIG.CENTRAL_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(corpo)})
     .then(function(r){ return r.json(); });
+}
+function semServidor(fn){
+  if(CONFIG.CENTRAL_URL) return false;
+  fn("analise","As inscrições online estão sendo ativadas. Volte em instantes ou escreva para "+CONFIG.EMAIL+".");
+  return true;
 }
 function avisoLogin(tipo, texto, acoes){
   var A=$("l-aviso"); A.textContent=""; if(!tipo) return;
   var d=el("div","aviso "+tipo,texto); if(acoes){ var w=el("div","acoes"); acoes.forEach(function(a){ w.append(a); }); d.append(w); } A.append(d);
 }
+function senhaOk(s){ return s.length >= 8 && /[A-Za-zÀ-ú]/.test(s) && /\d/.test(s); }
+
+/* Passo do código enviado por e-mail (confirmar cadastro ou criar nova senha) */
+function passoCodigo(alvo, avisoFn, tipo, email, texto){
+  var caixa = el("div","passo-codigo"); alvo.textContent=""; alvo.append(caixa);
+  var nova = tipo === "senha";
+  caixa.innerHTML = '<div class="aviso analise"></div>' +
+    '<label class="full">Código de 6 dígitos<input class="cod" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" style="letter-spacing:8px;font-size:22px;text-align:center"></label>' +
+    (nova ? '<label class="full">Nova senha<input class="s1" type="password" autocomplete="new-password" minlength="8" maxlength="64" placeholder="8+ caracteres, letras e números"></label>' +
+            '<label class="full">Repita a nova senha<input class="s2" type="password" autocomplete="new-password" minlength="8" maxlength="64"></label>' : '') +
+    '<div class="full" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"><button class="btn ok-cod" type="button">'+(nova?"Salvar nova senha":"Confirmar cadastro")+'</button>' +
+    '<button class="btn contorno reenviar" type="button">Reenviar código</button></div><div class="msg-cod" aria-live="polite"></div>';
+  caixa.querySelector(".aviso").textContent = texto || ("Enviamos um código para "+email+". Confira também a caixa de spam.");
+  var msg = function(t,c){ var m=caixa.querySelector(".msg-cod"); m.textContent=""; if(t) m.append(el("div","aviso "+(c||"erro"),t)); };
+  caixa.querySelector(".cod").focus();
+  caixa.querySelector(".reenviar").onclick = function(){
+    api({acao:"reenviarCodigo", email:email, tipo:tipo}).then(function(r){ msg(r.mensagem || "Código reenviado.", r.ok?"ok":"erro"); }).catch(function(){ msg("Sem conexão agora."); });
+  };
+  caixa.querySelector(".ok-cod").onclick = function(){
+    var bt=this, cod = soDig(caixa.querySelector(".cod").value);
+    if(cod.length !== 6){ msg("Digite os 6 números do código."); return; }
+    var d = {acao: nova ? "redefinirSenha" : "confirmar", email:email, codigo:cod};
+    if(nova){
+      var s1 = caixa.querySelector(".s1").value, s2 = caixa.querySelector(".s2").value;
+      if(!senhaOk(s1)){ msg("A senha precisa ter pelo menos 8 caracteres, com letras e números."); return; }
+      if(s1 !== s2){ msg("As duas senhas não são iguais."); return; }
+      d.novaSenha = s1;
+    }
+    bt.disabled = true;
+    api(d).then(function(r){
+      if(r && r.ok){ alvo.textContent=""; avisoFn("ok", nova ? "Nova senha salva. Você já está conectado." : "Cadastro confirmado! Bem-vindo(a) à Mesa."); entrouCom(r); location.hash = "entrar"; }
+      else msg((r && r.mensagem) || "Código inválido.");
+    }).catch(function(){ msg("Sem conexão com o servidor agora. Tente de novo."); }).then(function(){ bt.disabled=false; });
+  };
+}
+
+$("form-cad").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  if($("c-site").value){ aviso("ok","Cadastro recebido."); return; }
+  var ok = true, wz = soDig($("c-whats").value);
+  ok = marca("c-nome", limpa($("c-nome").value).split(" ").length >= 2) && ok;
+  ok = marca("c-email", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($("c-email").value.trim())) && ok;
+  ok = marca("c-whats", !wz || wz.length >= 10) && ok;
+  ok = marca("c-cidade", limpa($("c-cidade").value).length >= 2) && ok;
+  ok = marca("c-uf", !!$("c-uf").value) && ok;
+  ok = marca("c-perfil", !!$("c-perfil").value) && ok;
+  if(!ok){ aviso("erro","Confira os campos em vermelho: nome completo, e-mail, cidade, estado e perfil (WhatsApp, se informado, com DDD)."); return; }
+  var senha = $("c-senha").value;
+  if(!marca("c-senha", senhaOk(senha))){ aviso("erro","A senha precisa ter pelo menos 8 caracteres, com letras e números."); return; }
+  if(!marca("c-senha2", senha === $("c-senha2").value)){ aviso("erro","As duas senhas não são iguais."); return; }
+  if(!$("c-lgpd").checked){ aviso("erro","Para concluir, aceite os Termos de Uso e a Política de Privacidade."); return; }
+  if(semServidor(aviso)) return;
+  var email = limpa($("c-email").value,120).toLowerCase();
+  var dados = {
+    acao:"cadastrar", nome: limpa($("c-nome").value,120), email: email, whatsapp: wz, senha: senha,
+    cidade: limpa($("c-cidade").value,80), estado: $("c-uf").value, perfil: $("c-perfil").value,
+    extra: { tipo: $("c-tipo").value || "Ainda não sei", projeto: limpa($("c-projeto").value,400),
+      linguagens: Array.prototype.map.call(document.querySelectorAll("#c-lings input:checked"), function(c){ return c.value; }).join(", ") },
+    origem: "mesa-de-editais", consentimento: "Termos, Privacidade e LGPD aceitos na Mesa de Editais"
+  };
+  var bt=$("c-enviar"); bt.disabled=true; aviso("analise","Enviando seu cadastro…");
+  api(dados).then(function(r){
+      if(r && r.ok && r.confirmar){
+        $("form-cad").reset(); $("c-uf").value="RS";
+        aviso(null); passoCodigo($("c-aviso"), aviso, "confirmar", email, r.mensagem);
+      } else if(r && r.erro === "email_existe"){
+        aviso("erro","Este e-mail já está cadastrado. Entre com a sua senha ou use “Esqueci a senha”.");
+        $("l-email").value = email;
+      } else { aviso("erro", (r && r.mensagem) || "Não foi possível concluir o cadastro. Tente de novo."); }
+    })
+    .catch(function(){ aviso("erro","Sem conexão com o servidor agora. Confira a internet e tente de novo."); })
+    .then(function(){ bt.disabled=false; dados.senha = null; });
+});
+
 var PLANOS_TXT = {
   criador:{rot:"Criador · acesso livre", cls:"c-ok", txt:"Você tem acesso livre a todas as funções da Mesa, sem limite."},
   ativo:{rot:"Plano ativo", cls:"c-ok", txt:"Seu acesso está liberado."},
-  analise:{rot:"Em análise", cls:"c-analise", txt:"Seu cadastro está em análise. Você recebe a confirmação pelo WhatsApp."},
-  lista:{rot:"Aguardando lançamento", cls:"c-erro", txt:"Você está na lista de lançamento. Assim que a Mesa abrir, seu acesso é liberado e você recebe o aviso pelo WhatsApp."},
-  vencido:{rot:"Plano vencido", cls:"c-erro", txt:"Seu plano venceu. Fale pelo WhatsApp para renovar."}
+  teste:{rot:"Período de teste", cls:"c-ok", txt:"Seu período de teste está ativo."},
+  analise:{rot:"Em análise", cls:"c-analise", txt:"Seu cadastro está em análise. Você recebe a confirmação por e-mail."},
+  lista:{rot:"Aguardando lançamento", cls:"c-erro", txt:"Você está na lista de lançamento. Assim que a Mesa abrir, seu acesso é liberado e você recebe o aviso por e-mail."},
+  vencido:{rot:"Plano vencido", cls:"c-erro", txt:"Seu plano venceu. Escreva para "+CONFIG.EMAIL+" para renovar."},
+  bloqueado:{rot:"Acesso suspenso", cls:"c-erro", txt:"Seu acesso está suspenso. Escreva para "+CONFIG.EMAIL+"."}
 };
+function planoDe(r){
+  if(r.conta && r.conta.criador) return "criador";
+  return (r.licenca && r.licenca.status) || "lista";
+}
 function entrouCom(r){
-  try{ localStorage.setItem("mesa-sessao", JSON.stringify({token:r.token, nome:r.nome, plano:r.plano, ate:Date.now()+7*86400000})); }catch(e){}
-  mostrarPainel(r.nome, r.plano);
+  var nome = (r.conta && r.conta.nome) || r.nome, plano = planoDe(r);
+  try{ localStorage.setItem("mesa-sessao", JSON.stringify({token:r.token, nome:nome, plano:plano, ate:Date.now()+30*86400000})); }catch(e){}
+  mostrarPainel(nome, plano);
 }
 function mostrarPainel(nome, plano){
   var p = PLANOS_TXT[plano] || PLANOS_TXT.lista;
   $("p-nome").textContent = nome || "Participante";
   $("p-plano").textContent = p.rot; $("p-plano").className = "carimbo " + p.cls;
   $("p-texto").textContent = p.txt;
-  $("p-app").hidden = !(plano === "criador" || plano === "ativo");
-  $("form-login").hidden = true; $("painel").hidden = false;
+  $("p-app").hidden = !(plano === "criador" || plano === "ativo" || plano === "teste");
+  $("form-login").hidden = true; $("painel").hidden = false; $("l-passo").textContent = "";
   $("topo-entrar").textContent = "Minha Mesa";
 }
 function sair(){
   var s=null; try{ s=JSON.parse(localStorage.getItem("mesa-sessao")||"null"); localStorage.removeItem("mesa-sessao"); }catch(e){}
-  if(s && s.token && CONFIG.CADASTRO_URL) api({acao:"sair", token:s.token}).catch(function(){});
+  if(s && s.token && CONFIG.CENTRAL_URL) api({acao:"sair", token:s.token}).catch(function(){});
   $("painel").hidden = true; $("form-login").hidden = false; $("topo-entrar").textContent = "Entrar"; avisoLogin(null);
 }
 $("p-sair").addEventListener("click", sair);
@@ -909,29 +952,32 @@ $("form-login").addEventListener("submit", function(ev){
   ev.preventDefault();
   var email = $("l-email").value.trim().toLowerCase(), senha = $("l-senha").value;
   if(!marca("l-email", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) | !marca("l-senha", senha.length >= 1)){ avisoLogin("erro","Preencha e-mail e senha."); return; }
-  if(!CONFIG.CADASTRO_URL){ avisoLogin("analise","O acesso por e-mail e senha está sendo ativado. Enquanto isso, fale com a Mesa pelo WhatsApp (51) 98416-8848."); return; }
+  if(semServidor(avisoLogin)) return;
   var bt=$("l-enviar"); bt.disabled=true; avisoLogin("analise","Conferindo seu acesso…");
   api({acao:"entrar", email:email, senha:senha}).then(function(r){
     if(r && r.ok){ $("l-senha").value=""; avisoLogin(null); entrouCom(r); }
-    else if(r && r.erro === "bloqueado"){ avisoLogin("erro","Muitas tentativas. Aguarde 15 minutos e tente de novo."); }
-    else { avisoLogin("erro","E-mail ou senha incorretos."); }
+    else if(r && r.erro === "nao_confirmado"){ avisoLogin(null); passoCodigo($("l-passo"), avisoLogin, "confirmar", email, r.mensagem); }
+    else { avisoLogin("erro", (r && r.mensagem) || "E-mail ou senha incorretos."); }
   }).catch(function(){ avisoLogin("erro","Sem conexão com o servidor agora. Tente de novo em instantes."); })
     .then(function(){ bt.disabled=false; });
 });
 $("l-esqueci").addEventListener("click", function(ev){
   ev.preventDefault();
-  var email = $("l-email").value.trim();
-  var wa = el("a","btn verde","Pedir nova senha pelo WhatsApp");
-  wa.href = "https://wa.me/"+CONFIG.WHATSAPP+"?text="+encodeURIComponent("Olá! Esqueci minha senha da Mesa de Editais. Meu e-mail de cadastro é: "+(email||"[seu e-mail]"));
-  wa.target="_blank"; wa.rel="noopener";
-  avisoLogin("analise","Por segurança, a nova senha é liberada depois de confirmarmos que o e-mail é seu.", [wa]);
+  var email = $("l-email").value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ marca("l-email", false); avisoLogin("erro","Digite acima o e-mail do seu cadastro e toque de novo em “Esqueci a senha”."); return; }
+  if(semServidor(avisoLogin)) return;
+  avisoLogin("analise","Enviando código…");
+  api({acao:"esqueciSenha", email:email}).then(function(r){
+    if(r && r.ok){ avisoLogin(null); passoCodigo($("l-passo"), avisoLogin, "senha", email, r.mensagem); }
+    else avisoLogin("erro", (r && r.mensagem) || "Não foi possível enviar o código.");
+  }).catch(function(){ avisoLogin("erro","Sem conexão com o servidor agora."); });
 });
 /* Retoma a sessão salva e confere no servidor */
 (function(){
   var s=null; try{ s=JSON.parse(localStorage.getItem("mesa-sessao")||"null"); }catch(e){}
   if(!s || !s.token || !(s.ate > Date.now())){ try{ localStorage.removeItem("mesa-sessao"); }catch(e){} return; }
   mostrarPainel(s.nome, s.plano);
-  if(CONFIG.CADASTRO_URL) api({acao:"sessao", token:s.token}).then(function(r){ if(r && r.ok) entrouCom(Object.assign(r,{token:s.token})); else sair(); }).catch(function(){});
+  if(CONFIG.CENTRAL_URL) api({acao:"sessao", token:s.token}).then(function(r){ if(r && r.ok) entrouCom(Object.assign(r,{token:s.token})); else sair(); }).catch(function(){});
 })();
 })();
 </script>

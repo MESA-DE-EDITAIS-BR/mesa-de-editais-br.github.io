@@ -1,3 +1,4 @@
+/* OBSOLETO desde 09/11/2026: a Mesa usa o servidor da Central (servidor/central.gs no repositório marca-estrategia-tecnologia). Mantido só como histórico. */
 /**
  * MESA DE EDITAIS • Servidor de cadastro e acesso (Google Apps Script)
  *
